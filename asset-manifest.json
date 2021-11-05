@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/ImpassableMaze/static/js/main.b2930332.chunk.js",
-    "main.js.map": "/ImpassableMaze/static/js/main.b2930332.chunk.js.map",
+    "main.js": "/ImpassableMaze/static/js/main.d5bbd1e6.chunk.js",
+    "main.js.map": "/ImpassableMaze/static/js/main.d5bbd1e6.chunk.js.map",
     "runtime-main.js": "/ImpassableMaze/static/js/runtime-main.2adaea2a.js",
     "runtime-main.js.map": "/ImpassableMaze/static/js/runtime-main.2adaea2a.js.map",
     "static/css/2.cf5ef10e.chunk.css": "/ImpassableMaze/static/css/2.cf5ef10e.chunk.css",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.2adaea2a.js",
     "static/css/2.cf5ef10e.chunk.css",
     "static/js/2.5188dfbe.chunk.js",
-    "static/js/main.b2930332.chunk.js"
+    "static/js/main.d5bbd1e6.chunk.js"
   ]
 }
