@@ -27,7 +27,7 @@ import {
   START_LEVEL,
   CELL_SIZE,
   START_MAZE_SIZE,
-  GyroscopeChange
+  GyroscopeChange, SPEED_MULTIPLIER_X, SPEED_MULTIPLIER_Y
 } from "./config";
 import {InfoBlock} from "./components/InfoBlock";
 
@@ -65,7 +65,8 @@ const App: React.FC = () => {
   }, [maze, operation, setLevel]);
 
   useEffect(() => {
-    bridge.send('VKWebAppGyroscopeStart');
+    // @ts-ignore
+    bridge.send('VKWebAppGyroscopeStart', {"refresh_rate": 80});
     bridge.subscribe(({ detail }: VKBridgeEvent<AnyReceiveMethodName>) => {
       switch (detail.type) {
         case 'VKWebAppUpdateConfig': {
@@ -112,23 +113,25 @@ const App: React.FC = () => {
                     [oppositeDir]: pos.position[oppositeDir],
                     [pos.direction]: changePosition(pos.position, pos.sign, pos.direction, maze),
                   } as GyroscopeData2D,
-                  velocity: { x: data.x, y: data.y },
+                  velocity: { x: data.x * SPEED_MULTIPLIER_X, y: data.y * SPEED_MULTIPLIER_Y },
                 };
               }
             }
 
             if (Math.abs(data.x) > DIFF_MIN || Math.abs(data.y) > DIFF_MIN) {
-              const mainDirection = getDirection(data.x, data.y);
+              const speedX = data.x * SPEED_MULTIPLIER_X;
+              const speedY = data.y * SPEED_MULTIPLIER_Y;
+              const mainDirection = getDirection(speedX, speedY);
               const secondaryDirection = getOppositeDirection(mainDirection);
-              const sign = Math.abs(data.x) > Math.abs(data.y) ? Math.sign(data.x) : Math.sign(data.y);
+              const sign = Math.abs(speedX) > Math.abs(speedY) ? Math.sign(speedX) : Math.sign(speedY);
               return {
                 sign,
                 direction: mainDirection,
                 position: {
                   [secondaryDirection]: pos.position[secondaryDirection],
-                  [mainDirection]: changePosition(pos.position, Math.sign(data.x), mainDirection, maze),
+                  [mainDirection]: changePosition(pos.position, Math.sign(speedX), mainDirection, maze),
                 } as GyroscopeData2D,
-                velocity: { x: data.x, y: data.y },
+                velocity: { x: speedX, y: speedY },
                 previousPosition: pos.position,
                 previousVelocity: pos.velocity,
               };
@@ -155,7 +158,11 @@ const App: React.FC = () => {
 
               <PanelWrapper id="home">
                 <Panel id="home">
-                  <PanelHeader>Непроходимый лабиринт by Romb</PanelHeader>
+                  <PanelHeader>Непроходимый лабиринт</PanelHeader>
+                  <InfoBlock
+                      titleText={'Инфо'}
+                      valueText={'Попробуй пройти лабиринт :) Осторожно! Есть блоки, которые могут разрушаться от большой скорости!'}
+                  />
                   {!isAvailable ?
                       <InfoBlock
                           titleText={`Ошибка`}
@@ -186,7 +193,7 @@ const App: React.FC = () => {
                   )}
 
                   {maze && (
-                    <Group style={{ padding: '0.3rem 0.5rem' }}>
+                    <Group  style={{flex:1}}>
                       <Maze maze={maze} position={operation.position} prevPosition={operation.previousPosition} />
                     </Group>
                   )}

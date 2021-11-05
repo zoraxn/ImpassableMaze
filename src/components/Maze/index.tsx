@@ -13,7 +13,7 @@ const Canvas = styled.canvas`
 
 const Container = styled.div`
   display: flex;
-  padding: 2rem 1rem;
+  padding: 0.5rem 1rem;
 `;
 
 export type MazeProps = {
@@ -30,11 +30,11 @@ export const Maze: React.FC<MazeProps> = ({ maze, position, prevPosition }) => {
   const cellSize = useMemo(() => {
     switch (viewWidth) {
       case ViewWidth.MOBILE:
-        return 4;
+        return 10;
       case ViewWidth.TABLET:
-        return 8;
-      default:
         return 16;
+      default:
+        return 32;
     }
   }, [viewWidth]);
 
@@ -53,7 +53,10 @@ export const Maze: React.FC<MazeProps> = ({ maze, position, prevPosition }) => {
     if (ref.current) {
       const context = ref.current.getContext('2d');
       if (context) {
-        context.fillStyle = COLORS.blue;
+        context.fillStyle = COLORS.mazeBackground;
+        context.fillRect(prevPosition.x * cellSize, prevPosition.y * cellSize, cellSize, cellSize);
+
+        context.fillStyle = COLORS.playerColor;
         context.fillRect(position.x * cellSize, position.y * cellSize, cellSize, cellSize);
       }
     }
